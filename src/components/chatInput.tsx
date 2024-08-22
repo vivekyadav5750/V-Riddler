@@ -10,7 +10,7 @@ export default function ChatInput({ chatHistory,userInput, setUserInput }: ChatI
   const dispatch = useDispatch();
   // console.log("chatHistory", chatHistory);
   // console.log("userInput", userInput);
-  const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 768);
+  const [isDesktop, setIsDesktop] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => {
