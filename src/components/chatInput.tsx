@@ -4,11 +4,23 @@ import { CornerDownLeft } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { handleSubmitPhrase } from "@/redux/reducer";
 import { ChatInputProps } from "@/app/schema/types";
+import { useEffect, useState } from "react";
 
 export default function ChatInput({ chatHistory,userInput, setUserInput }: ChatInputProps) {
   const dispatch = useDispatch();
   // console.log("chatHistory", chatHistory);
   // console.log("userInput", userInput);
+  const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className="w-full h-max fixed bottom-0 left-0 right-0  ">
       <div className="bg-background rounded-t-xl border border-b-0 p-4 w-full mx-auto   max-w-[700px]">
@@ -23,7 +35,7 @@ export default function ChatInput({ chatHistory,userInput, setUserInput }: ChatI
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              if (isDesktop && e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 dispatch({ type: "riddler/setInput", payload: userInput });
                 dispatch(handleSubmitPhrase({ chatHistory, phrase: userInput }) as any);
