@@ -1,6 +1,8 @@
 import { handleSubmitPhrase, setInput } from "@/redux/reducer";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useDispatch } from "react-redux";
+import { DefaultCardProps } from "@/app/schema/types";
+import type { PromptRunType } from "@/app/schema/types";
 
 const DEFAULT_PROMPT = [
   "The more you take, the more you leave behind. What am I?",
@@ -11,9 +13,12 @@ const DEFAULT_PROMPT = [
   "I'm tall when I'm young, and I'm short when I'm old. What am I?"
 ];
 
-export default function DefaultCard() {
+export default function DefaultCard({
+  chatHistory,
+  setUserInput
+}: DefaultCardProps) {
   const dispatch = useDispatch();
-
+  // console.log("chatHistory", chatHistory);
   return (
     <div>
       <Card className="mb-10 ">
@@ -30,9 +35,14 @@ export default function DefaultCard() {
         {DEFAULT_PROMPT.map((prompt, index) => (
           <Card
             onClick={() => {
-              // dispatch(setInput(prompt));
+              setUserInput(prompt);
+            }}
+            onDoubleClick={() => {
               dispatch({ type: "riddler/setInput", payload: prompt });
-              dispatch(handleSubmitPhrase(prompt) as any);
+              dispatch(
+                handleSubmitPhrase({ chatHistory, phrase: prompt }) as any
+              );
+              setUserInput("");
             }}
             key={index}
             className="rounded-md hover:bg-background/50 duration-200 cursor-pointer"
