@@ -8,17 +8,25 @@ import { useEffect, useState } from "react";
 
 export default function ChatInput({ chatHistory,userInput, setUserInput }: ChatInputProps) {
   const dispatch = useDispatch();
-  // console.log("chatHistory", chatHistory);
-  // console.log("userInput", userInput);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsDesktop(window.innerWidth > 768);
+      if (typeof window !== 'undefined') {
+        setIsDesktop(window.innerWidth > 768);
+      }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    if (typeof window !== 'undefined') {
+      setIsDesktop(window.innerWidth > 768);
+      window.addEventListener('resize', handleResize);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize);
+      }
+    };
   }, []);
 
   return (

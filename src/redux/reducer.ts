@@ -1,6 +1,7 @@
 import { chatHistoryType, PromptRunType } from "@/app/schema/types";
 import { PromptRun } from "@/gemini/prompt";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Define the initial state
 const initialState = {
@@ -13,9 +14,17 @@ const initialState = {
 export const handleSubmitPhrase = createAsyncThunk(
   "riddler/handlePharseSubmit",
   async ({ chatHistory, phrase }: PromptRunType) => {
-    // console.log("Phrase submitted: ", phrase, chatHistory);
-    const ans = await PromptRun({ chatHistory, phrase });
-    return ans;
+    // call from external API
+    const response = await axios.post(
+      "https://v-riddler-backend.onrender.com/api/getData",
+      { chatHistory, phrase }
+    );
+    console.log("dataAPI response", response.data);
+
+    // call from local function
+    // const ans = await PromptRun({ chatHistory, phrase });
+    // return ans;
+    return response.data;
   }
 );
 
